@@ -1,0 +1,15 @@
+{
+  "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+  "abi": [
+    "constructor()",
+    "event IdentityRegistered(address indexed,string,string)",
+    "event IdentityValidated(address indexed,address indexed)",
+    "event ValidatorAdded(address indexed,address indexed)",
+    "function addValidator(address)",
+    "function getStudentIdentity(address) view returns (string,string,bool,address,uint256)",
+    "function isValidator(address) view returns (bool)",
+    "function registerStudentIdentity(string,string)",
+    "function studentIdentities(address) view returns (string,string,bool,address,uint256)",
+    "function validateIdentity(address)"
+  ]
+}

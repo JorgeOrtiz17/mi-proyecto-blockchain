@@ -3,226 +3,16 @@ import { ethers, BrowserProvider, Signer } from 'ethers';
 import { BehaviorSubject, from, Observable, of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 
-// ¡IMPORTANTE! Actualiza este ABI con el de tu contrato compilado
-// Lo encontrarás en `artifacts/contracts/IdentityManager.json` (si usas Hardhat)
-// o en `build/contracts/IdentityManager.json` (si usas Truffle)
-const IDENTITY_MANAGER_ABI = [
-    // Copia el array ABI de tu archivo JSON compilado aquí
-    // Ejemplo de cómo se vería una parte del ABI (ya te la proporcioné antes):
-    {
-        "inputs": [],
-        "stateMutability": "nonpayable",
-        "type": "constructor"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "studentAddress",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "string",
-                "name": "name",
-                "type": "string"
-            },
-            {
-                "indexed": false,
-                "internalType": "string",
-                "name": "studentIDHash",
-                "type": "string"
-            }
-        ],
-        "name": "IdentityRegistered",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "studentAddress",
-                "type": "address"
-            },
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "validatorAddress",
-                "type": "address"
-            }
-        ],
-        "name": "IdentityValidated",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "newValidator",
-                "type": "address"
-            },
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "addedBy",
-                "type": "address"
-            }
-        ],
-        "name": "ValidatorAdded",
-        "type": "event"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "_newValidator",
-                "type": "address"
-            }
-        ],
-        "name": "addValidator",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "_studentAddress",
-                "type": "address"
-            }
-        ],
-        "name": "getStudentIdentity",
-        "outputs": [
-            {
-                "internalType": "string",
-                "name": "name",
-                "type": "string"
-            },
-            {
-                "internalType": "string",
-                "name": "studentIDHash",
-                "type": "string"
-            },
-            {
-                "internalType": "bool",
-                "name": "isValidated",
-                "type": "bool"
-            },
-            {
-                "internalType": "address",
-                "name": "validatorAddress",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "registeredAt",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "name": "isValidator",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "string",
-                "name": "_name",
-                "type": "string"
-            },
-            {
-                "internalType": "string",
-                "name": "_studentIDHash",
-                "type": "string"
-            }
-        ],
-        "name": "registerStudentIdentity",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "name": "studentIdentities",
-        "outputs": [
-            {
-                "internalType": "string",
-                "name": "name",
-                "type": "string"
-            },
-            {
-                "internalType": "string",
-                "name": "studentIDHash",
-                "type": "string"
-            },
-            {
-                "internalType": "bool",
-                "name": "isValidated",
-                "type": "bool"
-            },
-            {
-                "internalType": "address",
-                "name": "validatorAddress",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "registeredAt",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "_studentAddress",
-                "type": "address"
-            }
-        ],
-        "name": "validateIdentity",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    }
-]; // <--- ¡Asegúrate de pegar el ABI completo aquí!
+// --- ¡IMPORTANTE! Importa el archivo JSON generado por Hardhat. ---
+// Esta ruta es relativa desde 'src/app/services/blockchain.service.ts'
+// a 'src/assets/IdentityManager.json'
+import IdentityManagerJson from '../../assets/IdentityManager.json';
 
-// ¡IMPORTANTE! Actualiza esta dirección con la dirección de tu contrato desplegado
-// Después de desplegar tu contrato en Ganache o una testnet, obtendrás esta dirección.
-const CONTRACT_ADDRESS = '0x5FbDB2315678afecb367f032d93F642f64180aa3'; // <-- ¡Actualiza con tu dirección real!
+
+
+// Ahora obtenemos la DIRECCIÓN y el ABI directamente del JSON importado
+const CONTRACT_ADDRESS = IdentityManagerJson.address; // <-- ¡Aquí va la dirección 0x... del JSON!
+const IDENTITY_MANAGER_ABI = IdentityManagerJson.abi;   // <-- ¡Aquí va el array del ABI del JSON!
 
 // Interfaz para tipar la respuesta de `getStudentIdentity`
 interface StudentIdentity {
@@ -259,6 +49,14 @@ export class BlockchainService {
             this.provider = new ethers.BrowserProvider((window as any).ethereum);
             this.setupAccountListeners(); // Configura escuchadores de cambios de cuenta/red
             await this.checkConnectionStatus(); // Verifica el estado inicial de la conexión
+
+            // Intenta inicializar el contrato aquí también para llamadas de solo lectura
+            try {
+                this.contract = new ethers.Contract(CONTRACT_ADDRESS, IDENTITY_MANAGER_ABI, this.signer || this.provider);
+            } catch (error) {
+                console.error("Error al inicializar el contrato al inicio. Asegúrate de que CONTRACT_ADDRESS y ABI sean correctos:", error);
+            }
+
         } else {
             console.warn('MetaMask o una wallet Ethereum compatible no detectada. Por favor, instale una.');
             this._isConnected.next(false);
@@ -277,13 +75,18 @@ export class BlockchainService {
                     this.ngZone.run(() => { // Ejecutar dentro de la zona de Angular para asegurar la detección de cambios
                         this._currentAccount.next(accounts[0].address);
                         this.signer = accounts[0]; // El primer account es el signer por defecto
-                        this.contract = new ethers.Contract(CONTRACT_ADDRESS, IDENTITY_MANAGER_ABI, this.signer);
+                        // Re-inicializar el contrato con el signer si es necesario
+                        if (!this.contract || this.contract.runner !== this.signer) { // Usar .runner para ethers v6
+                            this.contract = new ethers.Contract(CONTRACT_ADDRESS, IDENTITY_MANAGER_ABI, this.signer);
+                        }
                         this._isConnected.next(true);
                     });
                 } else {
                     this.ngZone.run(() => {
                         this._currentAccount.next(null);
                         this._isConnected.next(false);
+                        this.signer = undefined;
+                        this.contract = undefined;
                     });
                 }
             } catch (error) {
@@ -307,7 +110,7 @@ export class BlockchainService {
                         this._currentAccount.next(null);
                         this._isConnected.next(false);
                         this.signer = undefined;
-                        this.contract = undefined;
+                        this.contract = undefined; // Contrato también se redefine sin signer
                         console.log('Wallet desconectada');
                     } else {
                         this._currentAccount.next(accounts[0]);
@@ -327,7 +130,7 @@ export class BlockchainService {
                 this.ngZone.run(() => {
                     console.log('Red cambiada a Chain ID:', chainId);
                     // Re-inicializar para asegurarse de que el provider y el contrato estén en la red correcta
-                    this.initEthers();
+                    this.initEthers(); // Esto re-evaluará la conexión y el contrato
                 });
             });
         }
@@ -376,7 +179,6 @@ export class BlockchainService {
             return from(Promise.reject('Contrato o Signer no inicializado. Por favor, conecte su wallet.'));
         }
         // Llamada a la función `registerStudentIdentity` del Smart Contract
-        // Es importante usar la notación de corchetes si hay ambigüedad o si la función es privada en TS pero pública en Solidity
         return from(this.contract['registerStudentIdentity'](name, studentIDHash)).pipe(
             map((tx: ethers.ContractTransactionResponse) => tx.hash), // Mapea la respuesta a solo el hash de la transacción
             catchError((error) => {
