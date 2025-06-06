@@ -4,8 +4,6 @@ import { BehaviorSubject, from, Observable, of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 
 // --- ¡IMPORTANTE! Importa el archivo JSON generado por Hardhat. ---
-// Esta ruta es relativa desde 'src/app/services/blockchain.service.ts'
-// a 'src/assets/IdentityManager.json'
 import IdentityManagerJson from '../../assets/IdentityManager.json';
 
 
