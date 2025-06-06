@@ -1,0 +1,78 @@
+
+/* Estilos generales para el layout */
+.container {
+  padding: 20px;
+  max-width: 900px;
+  margin: 20px auto;
+  display: grid;
+  grid-template-columns: 1fr; /* Una columna por defecto */
+  gap: 20px;
+
+  @media (min-width: 768px) {
+    grid-template-columns: 1fr 1fr; /* Dos columnas en pantallas más grandes */
+  }
+}
+
+.section-card {
+  margin-bottom: 20px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  border-radius: 8px; /* Bordes redondeados */
+  display: flex;
+  flex-direction: column;
+  height: fit-content; // Asegura que la tarjeta no se estire innecesariamente
+}
+
+/* Para los inputs de formulario de Material */
+.full-width-input {
+  width: 100%;
+  margin-bottom: 15px; /* Espacio entre los campos de formulario */
+}
+
+/* Estilos para el toolbar superior */
+mat-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  height: 64px; /* Altura estándar de toolbar */
+  margin-bottom: 20px; /* Espacio debajo del toolbar */
+}
+
+mat-toolbar .spacer {
+  flex: 1 1 auto; /* Para empujar el contenido a los lados */
+}
+
+/* Estilos para los chips (VALIDADOR) */
+mat-chip-listbox {
+    margin-left: 15px; /* Espacio a la izquierda del chip */
+}
+
+mat-chip-option {
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Estilos para los resultados de verificación */
+.verification-result {
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.verification-result h3 {
+  margin-top: 0;
+  color: #3f51b5; /* Color primario de Material */
+}
+
+.verification-result p {
+  margin-bottom: 5px;
+}
+
+/* Mejoras visuales para botones */
+button {
+  margin-top: 10px;
+}
